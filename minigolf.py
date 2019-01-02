@@ -1,7 +1,5 @@
 import json
 
-# Variables
-config = []
 def main_loop():
     """main_loop is the primary program loop which keeps on running until the program is terminated"""
     menu()
@@ -38,7 +36,7 @@ def register_menu_choice():
 
 def show_results():
     """Method for displaying all results in the save file"""
-   
+    config = []
     # 1. --- Load data from file and add to list structure ---
     try: # if file not empty
         with open(working_file, "r+") as json_data:
@@ -60,6 +58,8 @@ def show_results():
 def register_result():
     """Method when registering a new result to our save file"""
     print_label("Lägg till resultat")
+
+    config = []
 
     # Get player name
     player_name = input("Namn: ")
