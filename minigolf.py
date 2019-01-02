@@ -1,11 +1,17 @@
 import json
+import sys
+
+# coding UTF-8
+# @author August Arnoldsson-Sukanya
+# Date: 02-01-2019
 
 def main_loop():
     """main_loop is the primary program loop which keeps on running until the program is terminated"""
     menu()
 
 def print_label(label_text):
-    """Method prints a label in the terminal window.
+    """
+    Method prints a label in the terminal window.
     @param label_text text to print
     """ 
     print("*"*len(label_text))
@@ -30,9 +36,9 @@ def register_menu_choice():
     elif(state == "2"): # Registrera resultat
         register_result()
     elif(state == "3"): # Radera resultat
-        pass
+        remove_result()
     elif(state == "4"): # Avsluta
-        pass
+        sys.exit
 
 def show_results():
     """Method for displaying all results in the save file"""
@@ -111,6 +117,33 @@ def register_result():
     with open(working_file, "w") as write_file:
         json.dump(config, write_file)
 
+def remove_result():
+    config = []
+    # 1. --- Load data from file and add to list structure ---
+    try: # if file not empty
+        with open(working_file, "r+") as json_data:
+            data = json.load(json_data)
+            config = data
+    except json.decoder.JSONDecodeError: # file is empty
+        print("Fel, filen är tom")
+        menu()
+        return
+    # 2. --- Ask user for the name of the player who should be removed ---
+    name_of_player = input("Ange namnet på spelaren du vill ta bort ")
+    
+    # 3. --- Find the player in the list of players in "config" ---
+    try: # if player exists in results
+        for listings in config:
+            if(listings["name"] == name_of_player):
+                config.remove(listings)
+    except:
+        print("Error: Player does not exist in save file.")
+
+    # 4. --- Update save file ---
+    with open(working_file, "w") as write_file:
+        json.dump(config, write_file)
+    menu()
+
 def open_file():
     global working_file
     try:
@@ -121,6 +154,11 @@ def open_file():
         print("Fel, angiven fil finns inte.")
         open_file()   
 
+# Check if file exists before starting program
 open_file() 
+
+# Introduce user
 print_label("Klubbmästerskap i minigolf")       
+
+# Begin main program loop
 main_loop()
