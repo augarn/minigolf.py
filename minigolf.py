@@ -1,5 +1,6 @@
 import json
 import sys
+import operator
 
 # coding UTF-8
 # @author August Arnoldsson-Sukanya
@@ -38,9 +39,18 @@ def register_sort_choice():
     print("1) Varv 1")
     print("2) Varv 2")
     print("3) Varv 3")
-    print("4) Originalordning")
-    choice = input("Val (0-5): ")
-    return choice
+    print("4) Totalt")
+    print("5) Originalordning")
+    while True:
+        try:
+            choice = int(input("Val (0-5): "))
+            if(choice >= 0 ):
+                return choice
+                break
+            else:
+                pass
+        except:
+            pass
 
 def show_results():
     """Method for displaying all results in the save file"""
@@ -62,8 +72,23 @@ def show_results():
     # 3. --- Print table of dictionary data in list structure ---
     print("Resultat")
     print("*"*60)
-    table_template = "{name:8} {round_1:8} {round_2:8} {round_3:8} {total:8} {average:8}"
+    table_template = "{name:8} {round_1:6} {round_2:6} {round_3:6} {total:5} {average:5}"
     print(table_template.format(name="NAMN", round_1="VARV 1", round_2="VARV 2", round_3="VARV 3", total="TOTAL", average="SNITT"))
+
+    # 4. --- Apply sorting choice --- 
+    if(choice == 0): # namn
+        config.sort(key=operator.itemgetter('name'))
+    elif(choice == 1): # varv 1
+        config.sort(key=operator.itemgetter('round_1'))
+    elif(choice == 2): # varv 2
+        config.sort(key=operator.itemgetter('round_2'))
+    elif(choice == 3): # varv 3
+        config.sort(key=operator.itemgetter('round_3'))
+    elif(choice == 4): # Totalt
+        config.sort(key=operator.itemgetter('total'))
+    elif(choice == 5): # Originalordning
+        config.sort(key=operator.itemgetter('average'))
+    
     for each_value in config: 
         print(table_template.format(**each_value))
     menu()
@@ -72,6 +97,7 @@ def register_result():
     """Method when registering a new result to our save file"""
     print_label("Lägg till resultat")
 
+    # List which will hold existing data from save file
     config = []
 
     # 1. --- Get player name ---
@@ -110,11 +136,11 @@ def register_result():
     # 4. --- Save data in dictionary structure ---    
     player_data = {
                 "name":str(player_name),
-                "round_1":str(round_1),
-                "round_2":str(round_2),
-                "round_3":str(round_3),
-                "total":str(int(round_1 + round_2 + round_3)),
-                "average":str(int((round_1 + round_2 + round_3)/3))
+                "round_1":int(round_1),
+                "round_2":int(round_2),
+                "round_3":int(round_3),
+                "total":int(round_1 + round_2 + round_3),
+                "average":int((round_1 + round_2 + round_3)/3)
             }
 
     # 5. --- Add dictionary to list structure ---  
