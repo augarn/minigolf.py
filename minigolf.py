@@ -70,6 +70,9 @@ def show_results():
     except json.decoder.JSONDecodeError: # file is empty
         print("Fel, filen har fel struktur. Programmet kommer nu att avslutas.")
         sys.exit()
+    except FileNotFoundError:
+        print("Fel: filen finns ej.")
+        sys.exit()
         
 
     # 2. --- Get sort choice from user by invoking method "register_sort_choice" ---
@@ -167,11 +170,16 @@ def remove_result():
             data = json.load(json_data)
             config = data
     except json.decoder.JSONDecodeError: # file is empty
-        print("Fel, filen är tom")
+        print("Fel: filen är tom.")
         menu()
         return
+    except FileNotFoundError:
+        print("Fel: filen finns inte.")
+        menu()
+        return
+        
     # 2. --- Ask user for the name of the player who should be removed ---
-    name_of_player = input("Ange namnet på spelaren du vill ta bort ")
+    name_of_player = input("Ange namnet på spelaren du vill ta bort: ")
     
     # 3. --- Find the player in the list of players in "config" ---
     for idx, listings in enumerate(config):
