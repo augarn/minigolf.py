@@ -31,7 +31,7 @@ def menu():
     elif(state == "3"): # Radera resultat
         remove_result()
     elif(state == "4"): # Avsluta
-        sys.exit
+        sys.exit()
 
 def register_sort_choice():
     print_label("Hur vill du sortera resultaten?")
@@ -62,9 +62,9 @@ def show_results():
             data = json.load(json_data)
             config = data
     except json.decoder.JSONDecodeError: # file is empty
-        print("Fel, filen är tom")
-        menu()
-        return
+        print("Fel, filen har fel struktur. Programmet kommer nu att avslutas.")
+        sys.exit()
+        
 
     # 2. --- Get sort choice from user by invoking method "register_sort_choice" ---
     choice = register_sort_choice()
@@ -76,17 +76,17 @@ def show_results():
     print(table_template.format(name="NAMN", round_1="VARV 1", round_2="VARV 2", round_3="VARV 3", total="TOTAL", average="SNITT"))
 
     # 4. --- Apply sorting choice --- 
-    if(choice == 0): # namn
+    if(choice == 0): # sortera enligt namn
         config.sort(key=operator.itemgetter('name'))
-    elif(choice == 1): # varv 1
+    elif(choice == 1): # sortera enligt varv 1
         config.sort(key=operator.itemgetter('round_1'))
-    elif(choice == 2): # varv 2
+    elif(choice == 2): # sortera enligt varv 2
         config.sort(key=operator.itemgetter('round_2'))
-    elif(choice == 3): # varv 3
+    elif(choice == 3): # sortera enligt varv 3
         config.sort(key=operator.itemgetter('round_3'))
-    elif(choice == 4): # Totalt
+    elif(choice == 4): # sortera enligt Totalt
         config.sort(key=operator.itemgetter('total'))
-    elif(choice == 5): # Originalordning
+    elif(choice == 5): # sortera enligt Originalordning
         config.sort(key=operator.itemgetter('average'))
     
     for each_value in config: 
