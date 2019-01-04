@@ -22,7 +22,9 @@ def menu():
     print("2. Registrera resultat")
     print("3. Radera resultat")
     print("4. Avsluta")
+    register_menu_choice()
 
+def register_menu_choice():
     state = input("Val: ")
     if(state == "1"):   # Visa resultat
         show_results()
@@ -32,6 +34,10 @@ def menu():
         remove_result()
     elif(state == "4"): # Avsluta
         sys.exit()
+    else:
+        print("Fel: ogiltigt menyval.")
+        register_menu_choice()
+        return
 
 def register_sort_choice():
     print_label("Hur vill du sortera resultaten?")
@@ -44,13 +50,13 @@ def register_sort_choice():
     while True:
         try:
             choice = int(input("Val (0-5): "))
-            if(choice >= 0 ):
+            if(choice >= 0 and choice <= 5):
                 return choice
                 break
             else:
-                pass
-        except:
-            pass
+                print("Fel: ange ett värde mellan 0 och 5")
+        except ValueError:
+            print("Fel: ange ett värde mellan 0 och 5")
 
 def show_results():
     """Method for displaying all results in the save file"""
@@ -168,12 +174,13 @@ def remove_result():
     name_of_player = input("Ange namnet på spelaren du vill ta bort ")
     
     # 3. --- Find the player in the list of players in "config" ---
-    try: # if player exists in results
-        for listings in config:
-            if(listings["name"] == name_of_player):
-                config.remove(listings)
-    except:
-        print("Error: Player does not exist in save file.")
+    for idx, listings in enumerate(config):
+        if listings["name"] == name_of_player:
+            config.remove(listings)
+            print("Ok: angiven spelare borttagen.")
+            break
+        elif idx == (len(config) - 1):   
+            print("Fel: angiven spelare finns ej.")
 
     # 4. --- Update save file ---
     with open(working_file, "w") as write_file:
