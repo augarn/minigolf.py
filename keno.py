@@ -9,41 +9,24 @@ import random
 # sys import required for terminating program
 import sys
 
-# list which stores each player
+# list of players 
 list_of_players = []
-
-# list which stores the numbers each player inputs
-player_values = []
 
 # list which stores the scoring results for each round played
 round_results = []
 
-# list which stores the scoring results for a single round
-player_scores = []
-
-# list which stores the numbers the current player is inputting
-input_numbers = []
-
 # valid numbers that a player may choose
 valid_numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"]
 
-# the numbers that the AI selected
-drafted_numbers = []
-
-# current player score
-score = 0
-
 def establish_players():
-    global list_of_players
     amount_of_players = input("Hur många är det som vill spela? ")
- 
     try:
         for count in range(0,int(amount_of_players)):
             player_name = input("Namn på spelare: ")
             list_of_players.append(player_name)
     except ValueError:
         print("Fel, ange ett heltal.")
-        establish_players()
+        establish_players(list_of_players)
    
 def run():   
     """Main program sequence"""
@@ -81,7 +64,12 @@ def menu():
 
 def input_values():
     """Function asks the user to input five unique integers within interval 1-25"""
-    player_values.clear()
+    # list which stores the numbers each player inputs
+    player_values = []
+
+    # list which stores the numbers the current player is inputting
+    input_numbers = []
+    
     for each_player in list_of_players:
         while True:
             try:
@@ -105,12 +93,18 @@ def input_values():
                 print("Fel, mata in 5 tal")    
                 pass
         player_values.append(input_numbers.split(","))
-    draft()
+    draft(player_values)
 
-def draft():
-    global drafted_numbers
-    global score 
-    drafted_players = 0
+def draft(player_values):
+    # the numbers that the AI selected
+    drafted_numbers = []
+    
+    # current player score
+    score = 0 
+    
+    # list which stores the scoring results for a single round
+    player_scores = []
+    
     """Method chooses 10 random values from the valid range and then displays it on a playfield"""
     drafted_numbers = random.sample(valid_numbers, 10)
     for i in valid_numbers:
