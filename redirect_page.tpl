@@ -1,0 +1,1 @@
+Updated <a href="/wiki/{{pagename}}/">page!</a>
