@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>Wiki - home</title>
+        <meta charset="UTF-8">
     </head>
 
     <body>

@@ -2,6 +2,7 @@
 # Author: August Arnoldsson
 import os
 from bottle import route, run, template, request, static_file, request, redirect
+# -*- coding: utf-8 -*-
 
 @route("/")
 def list_articles():
@@ -48,8 +49,8 @@ def update_article():
     Receives page title and contents from a form, and creates/updates a
     text file for that page.
     """
-    article_name_received = request.forms.get('article_name')
-    article_content_received = request.forms.get('article_content')
+    article_name_received = getattr(request.forms, 'article_name')
+    article_content_received = getattr(request.forms, 'article_content')
     
     # 1. --- Create or overwrite file representing article ---
     webpage = open("./wiki/"+article_name_received, "w")
@@ -57,4 +58,4 @@ def update_article():
     return template('redirect_page', pagename=str(article_name_received))#TODO
     webpage.close()
 
-run(host='localhost', port=8080, debug=True, reloader=True)
+run(host='localhost', port=23403, debug=True, reloader=True)
