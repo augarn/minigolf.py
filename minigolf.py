@@ -198,12 +198,12 @@ def remove_result():
 def open_file():
     global working_file
     try:
-        working_file = input("Ange filnamnet med filändelsen .json: ")
+        working_file = input("Ange filnamnet med filändelsen .json inkluderad (exempelvis 'data.json' och inte enbart 'data): ")
         file = open(working_file)
-        file.close()
-    except IOError:
-        print("Fel, angiven fil finns inte.")
-        open_file()   
+    except FileNotFoundError:
+        print("Fel, angiven fil finns inte. En ny fil med angivet namn kommer att skapas.")
+        with open(working_file, 'w') as write_file:
+            json.dump([],write_file)
 
 # 1. --- Check if file exists before starting program ---
 open_file() 
