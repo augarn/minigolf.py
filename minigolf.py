@@ -33,7 +33,6 @@ def register_menu_choice():
     elif(state == "3"): # Radera resultat
         remove_result()
     elif(state == "4"): # Avsluta
-        file.close()
         sys.exit()
     else:
         print("Fel: ogiltigt menyval.")
@@ -226,21 +225,14 @@ def open_file():
     global working_file
     global file
     try:
-<<<<<<< HEAD
-        working_file = input("Ange filnamnet med filändelsen .json: ")
+        working_file = input("Ange filnamnet med filändelsen .json inkluderad (exempelvis 'data.json' och inte enbart 'data): ")
         file = open(working_file, "r+")
         file.close()
-    except IOError:
-        print("Fel, angiven fil finns inte.")
-        open_file()   
-=======
-        working_file = input("Ange filnamnet med filändelsen .json inkluderad (exempelvis 'data.json' och inte enbart 'data): ")
-        file = open(working_file)
     except FileNotFoundError:
         print("Fel, angiven fil finns inte. En ny fil med angivet namn kommer att skapas.")
         with open(working_file, 'w') as write_file:
             json.dump([],write_file)
->>>>>>> f95a42b45f058f4a24426e0691c11daf4c8d0aee
+            write_file.close()
 
 # 1. --- Check if file exists before starting program ---
 open_file() 
