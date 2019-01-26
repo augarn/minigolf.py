@@ -33,6 +33,7 @@ def register_menu_choice():
     elif(state == "3"): # Radera resultat
         remove_result()
     elif(state == "4"): # Avsluta
+        file.close()
         sys.exit()
     else:
         print("Fel: ogiltigt menyval.")
@@ -58,6 +59,22 @@ def register_sort_choice():
         except ValueError:
             print("Fel: ange ett värde mellan 0 och 5")
 
+def register_sort_order_choice():
+    print_label("I vilken ordning vill du sortera resultaten?")
+    print("0) Fallande")
+    print("1) Stigande")
+ 
+    while True:
+        try:
+            sort_order_choice = int(input("Val (0-1): "))
+            if(sort_order_choice >= 0 and sort_order_choice <= 1):
+                return sort_order_choice
+                break
+            else:
+                print("Fel: ange ett värde mellan 0 och 1")
+        except ValueError:
+            print("Fel: ange ett värde mellan 0 och 1")
+
 def show_results():
     """Method for displaying all results in the save file"""
     config = []
@@ -67,9 +84,9 @@ def show_results():
         with open(working_file, "r+") as json_data:
             data = json.load(json_data)
             config = data
+            json_data.close()
     except json.decoder.JSONDecodeError: # file is empty
-        print("Fel, filen har fel struktur. Programmet kommer nu att avslutas.")
-        sys.exit()
+        pass
     except FileNotFoundError:
         print("Fel: filen finns ej.")
         sys.exit()
@@ -77,6 +94,7 @@ def show_results():
 
     # 2. --- Get sort choice from user by invoking method "register_sort_choice" ---
     choice = register_sort_choice()
+    sort_order_choice = register_sort_order_choice()
 
     # 3. --- Print table of dictionary data in list structure ---
     print("Resultat")
@@ -84,20 +102,25 @@ def show_results():
     table_template = "{name:8} {round_1:6} {round_2:6} {round_3:6} {total:5} {average:5}"
     print(table_template.format(name="NAMN", round_1="VARV 1", round_2="VARV 2", round_3="VARV 3", total="TOTAL", average="SNITT"))
 
+    if(sort_order_choice == 0):
+        sorting_order = True
+    elif(sort_order_choice == 1):
+        sorting_order = False
+
     # 4. --- Apply sorting choice --- 
     if(choice == 0): # sortera enligt namn
-        config.sort(key=operator.itemgetter('name'))
+        sorted(config,key=operator.itemgetter('name'), reverse=sorting_order)
     elif(choice == 1): # sortera enligt varv 1
-        config.sort(key=operator.itemgetter('round_1'))
+        config.sort(key=operator.itemgetter('round_1'), reverse=sorting_order)
     elif(choice == 2): # sortera enligt varv 2
-        config.sort(key=operator.itemgetter('round_2'))
+        config.sort(key=operator.itemgetter('round_2'), reverse=sorting_order)
     elif(choice == 3): # sortera enligt varv 3
-        config.sort(key=operator.itemgetter('round_3'))
+        config.sort(key=operator.itemgetter('round_3'), reverse=sorting_order)
     elif(choice == 4): # sortera enligt Totalt
-        config.sort(key=operator.itemgetter('total'))
+        config.sort(key=operator.itemgetter('total'), reverse=sorting_order)
     elif(choice == 5): # sortera enligt Originalordning
-        config.sort(key=operator.itemgetter('average'))
-    
+        config.sort(key=operator.itemgetter('average'), reverse=sorting_order)
+  
     for each_value in config: 
         print(table_template.format(**each_value))
     menu()
@@ -139,6 +162,7 @@ def register_result():
         with open(working_file, "r+") as json_data:
             data = json.load(json_data)
             config = data
+            json_data.close()
     except: # file is empty => move on
         pass
 
@@ -158,6 +182,7 @@ def register_result():
     # 6. --- Save list of dictionaries to ---
     with open(working_file, "w") as write_file:
         json.dump(config, write_file)
+        write_file.close()
 
     # 7. --- Return to main menu --- 
     menu()
@@ -169,6 +194,7 @@ def remove_result():
         with open(working_file, "r+") as json_data:
             data = json.load(json_data)
             config = data
+            json_data.close()
     except json.decoder.JSONDecodeError: # file is empty
         print("Fel: filen är tom.")
         menu()
@@ -193,13 +219,15 @@ def remove_result():
     # 4. --- Update save file ---
     with open(working_file, "w") as write_file:
         json.dump(config, write_file)
+        write_file.close()
     menu()
 
 def open_file():
     global working_file
+    global file
     try:
         working_file = input("Ange filnamnet med filändelsen .json: ")
-        file = open(working_file)
+        file = open(working_file, "r+")
         file.close()
     except IOError:
         print("Fel, angiven fil finns inte.")
